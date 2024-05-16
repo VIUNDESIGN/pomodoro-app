@@ -1,6 +1,6 @@
-# React + Vite
+# Pomodoro app by Viro with React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Amazing !
 
 Currently, two official plugins are available:
 
