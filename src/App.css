@@ -1,0 +1,165 @@
+body {
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+}
+
+  #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.dark-mode {
+  background-color: #1f1f1f;
+  color: white;
+}
+
+.light-mode {
+  background-color: white;
+  color: black;
+}
+
+.btn {
+  cursor: pointer;
+  /* background-color: #0056b3; */
+}
+
+.btn:active,
+.btn:hover {
+  background-image: linear-gradient(to right, #0056b3, #007bff);
+}
+
+h1 {
+  font-size: 2.3em !important;
+}
+
+#timer {
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: 0.05rem;
+}
+
+.toggle-container {
+  background-color: inherit;
+  color: inherit;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row;
+  justify-content: right;
+}
+
+.timer-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 0 40px 0;
+}
+
+.buttons-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}
+
+.favicon {
+  width: 5em;
+  padding: 1em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.favicon:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .favicon {
+    animation: slidein 1.3s linear 1s infinite alternate;
+  }
+}
+
+@keyframes slidein {
+  from {
+    transform: translateY(0%);
+  }
+  50% {
+    transform: translateY(-10%);
+  }
+  to {
+    transform: translateY(0%);
+  }
+}
+
+/* Que cada minuto haga un 360 */
+@media (prefers-reduced-motion: no-preference) {
+  .favicon-360 {
+    animation: spin 0.5s linear 1;
+    /* animation-delay: 60s; */
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Popup */
+.popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 999;
+  text-align: center;
+}
+
+.popup.show {
+  display: block;
+}
+
+#closePopupBtn {
+  display: block;
+  margin-top: 20px;
+  background-color: #ff0000;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 20px;
+  margin: 20px auto 0;
+}
+
+#closePopupBtn:hover {
+  background-color: #cc0000;
+}
+
+#popupContent {
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+}
