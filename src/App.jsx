@@ -4,39 +4,40 @@ import favicon from './favicon.ico';
 import alarm from './alarm.mp3';
 import './App.css';
 
-function Button({ id, className, text, textTogle, onClick, isTogle }) {
+function Button({ id, className, text, textTogle, onClick, isTogle, ariaLabel }) {
   return (
-    <button id={id} className={`btn ${className}`} onClick={onClick}>
+    <button id={id} className={`btn ${className}`} onClick={onClick} aria-pressed={isTogle}
+      aria-label={ariaLabel || text}>
       {textTogle && isTogle ? textTogle : text}
     </button>
   );
 }
 
-function PopUp({
-  id = 'popUp',
-  className = 'popUp',
-  startTime,
-  endTime,
-  elapsedTime,
-}) {
-  const visibility = 'hidden';
-  return (
-    <div>
-      ✅ Pomodoro completed !<br />
-      <br />
-      Start: {startTime ? startTime : 'unknown'}
-      <br />
-      End: {endTime ? endTime : 'unknown'}
-      <br />
-      <br />
-      Elapsed: {elapsedTime ? elapsedTime : 'unknown'}
-      <button id="closePopupBtn" class="btn" text="Close" />
-    </div>
-  );
-}
+// function PopUp({
+//   id = 'popUp',
+//   className = 'popUp',
+//   startTime,
+//   endTime,
+//   elapsedTime,
+// }) {
+//   const visibility = 'hidden';
+//   return (
+//     <div>
+//       ✅ Pomodoro completed !<br />
+//       <br />
+//       Start: {startTime ? startTime : 'unknown'}
+//       <br />
+//       End: {endTime ? endTime : 'unknown'}
+//       <br />
+//       <br />
+//       Elapsed: {elapsedTime ? elapsedTime : 'unknown'}
+//       <button id="closePopupBtn" className="btn" text="Close" />
+//     </div>
+//   );
+// }
 
 function App() {
-  const [darkMode, setDarkMode] = useState(() => {
+  const [darkMode, setDarkMode] = useState((darkMode) => {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode === 'true' || false;
   });
@@ -55,6 +56,61 @@ function App() {
 
   const [isMuted, setIsMuted] = useState(false);
   const [timer, setTimer] = useState(25 * 60); // 25 minutos
+  const [isRunning, setIsRunning] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+
+  useEffect(() => {
+    let interval;
+    if (isRunning) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => {
+          if (prevTimer > 0) {
+            return prevTimer - 1;
+          } else {
+            clearInterval(interval);
+            setIsRunning(false);
+            setEndTime(new Date().toLocaleTimeString());
+            setShowPopup(true);
+            if (!isMuted) {
+              const alarmSound = document.getElementById('alarmSound');
+              if (alarmSound) {
+                alarmSound.play();
+              }
+            }
+            return 0;
+          }
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning, isMuted]);
+
+  const startPauseTimer = () => {
+    if (isRunning) {
+      setIsRunning(false);
+    } else {
+      if (timer === 0) {
+        setTimer(25 * 60);
+      }
+      setIsRunning(true);
+      if (!startTime) {
+        setStartTime(new Date().toLocaleTimeString());
+      }
+    }
+  };
+
+  const resetTimer = () => {
+    setIsRunning(false);
+    setTimer(25 * 60);
+    setStartTime(null);
+    setEndTime(null);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
 
   const toggleMute = () => {
     setIsMuted((prevMuted) => !prevMuted);
@@ -75,19 +131,20 @@ function App() {
       <div className="toggle-container">
         <Button
           id="toggleMuteBtn"
-          className="btn"
-          text="🔊 Sound"
-          textTogle="🔇 Unmute"
+          text="🔈"
+          textTogle="🔊"
           onClick={toggleMute}
           isTogle={!isMuted}
+          ariaLabel={isMuted ? "Unmute sound" : "Mute sound"}
+
         />
         <Button
           id="toggleModeBtn"
-          className="btn"
-          text="🌙 Night Mode"
-          textTogle="☀️ Day Mode"
+          text="🌙"
+          textTogle="☀️"
           onClick={toggleDarkMode}
           isTogle={!darkMode}
+          ariaLabel={darkMode ? "Switch to day mode" : "Switch to night mode"}
         />
       </div>
       <div className="timer-container" id="timer">
@@ -96,35 +153,61 @@ function App() {
           .padStart(2, '0')}
         :{(timer % 60).toString().padStart(2, '0')}
       </div>
-      <div class="buttons-container">
+      <div className="buttons-container">
         <Button
           id="startBtn"
-          className="btn"
-          text="Start"
-          textTogle="Pause"
-          onClick={() => {}}
+          text="▶️ Start"
+          textTogle="⏸️ Pause"
+          onClick={startPauseTimer}
+          isTogle={isRunning}
+          ariaLabel={isRunning ? "Pause timer" : "Start timer"}
         />
         <Button
           id="ResetBtn"
-          className="btn"
-          text="Reset"
-          onClick={() => setTimer(25 * 60)}
+          text="🔄 Reset"
+          onClick={resetTimer}
+          ariaLabel="Reset timer"
         />
         <Button
           id="+Btn"
-          className="btn"
-          text="+"
+          text="➕"
           onClick={() => setTimer((timer) => timer + 60)}
+          ariaLabel="Increase timer by 1 minute"
         />
         <Button
           id="-Btn"
-          className="btn"
-          text="-"
+          text="➖"
           onClick={() => setTimer((timer) => timer - 60)}
+          ariaLabel="Decrease timer by 1 minute"
         />
       </div>
+      {showPopup && (
+        <div className="popup show">
+          <div id="popupContent">
+            ✅ Pomodoro completed !<br />
+            <br />
+            Start: {startTime ? startTime : 'unknown'}
+            <br />
+            End: {endTime ? endTime : 'unknown'}
+            <br />
+            <br />
+            Elapsed: {startTime && endTime ? timerElapsed(startTime, endTime) : 'unknown'}
+            <div className="popup-button"><button id="closePopupBtn" className="btn" onClick={closePopup} aria-label="Close popup">Close</button></div>
+          </div>
+        </div>
+      )}
     </>
   );
+
 }
+
+const timerElapsed = (start, end) => {
+  const startTime = new Date(`1970-01-01T${start}Z`);
+  const endTime = new Date(`1970-01-01T${end}Z`);
+  const diffMs = endTime - startTime;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffSecs = Math.floor((diffMs % 60000) / 1000);
+  return `${diffMins} min ${diffSecs} sec`;
+};
 
 export default App;
