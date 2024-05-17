@@ -31,7 +31,7 @@ function Button({ id, className, text, textTogle, onClick, isTogle, ariaLabel })
 //       <br />
 //       <br />
 //       Elapsed: {elapsedTime ? elapsedTime : 'unknown'}
-//       <button id="closePopupBtn" class="btn" text="Close" />
+//       <button id="closePopupBtn" className="btn" text="Close" />
 //     </div>
 //   );
 // }
@@ -131,7 +131,6 @@ function App() {
       <div className="toggle-container">
         <Button
           id="toggleMuteBtn"
-          className="btn"
           text="🔈"
           textTogle="🔊"
           onClick={toggleMute}
@@ -141,7 +140,6 @@ function App() {
         />
         <Button
           id="toggleModeBtn"
-          className="btn"
           text="🌙"
           textTogle="☀️"
           onClick={toggleDarkMode}
@@ -155,10 +153,9 @@ function App() {
           .padStart(2, '0')}
         :{(timer % 60).toString().padStart(2, '0')}
       </div>
-      <div class="buttons-container">
+      <div className="buttons-container">
         <Button
           id="startBtn"
-          className="btn"
           text="▶️ Start"
           textTogle="⏸️ Pause"
           onClick={startPauseTimer}
@@ -167,21 +164,18 @@ function App() {
         />
         <Button
           id="ResetBtn"
-          className="btn"
           text="🔄 Reset"
           onClick={resetTimer}
           ariaLabel="Reset timer"
         />
         <Button
           id="+Btn"
-          className="btn"
           text="➕"
           onClick={() => setTimer((timer) => timer + 60)}
           ariaLabel="Increase timer by 1 minute"
         />
         <Button
           id="-Btn"
-          className="btn"
           text="➖"
           onClick={() => setTimer((timer) => timer - 60)}
           ariaLabel="Decrease timer by 1 minute"
